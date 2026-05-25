@@ -1,0 +1,127 @@
+aid: embroker
+name: Embroker
+description: >-
+  Embroker is a San Francisco-based digital business insurance broker and
+  insurtech platform founded in 2015 by Matt Miller, on a mission to make
+  commercial insurance simple, clear, and tailored to each industry. Embroker
+  operates a digital-first online platform where businesses can compare,
+  quote, purchase, and manage commercial insurance policies directly, with
+  industry-specific programs for funded startups, tech companies, law firms,
+  venture capital and private equity firms, financial services professionals,
+  consultants, real estate agents, and small businesses. Its coverage
+  portfolio includes Business Owners Policy (BOP), commercial general
+  liability, professional liability, technology errors and omissions, cyber
+  insurance, directors and officers, employment practices liability,
+  commercial crime, key person, workers compensation, and lawyers
+  professional liability, often bundled into industry packages such as the
+  Startup Bundle, Law Bundle, and MPL Bundle. In 2017 Embroker partnered
+  with Munich Re to underwrite its own digital insurance products; in 2020
+  it launched Embroker Access for retail and wholesale brokers; and in 2023
+  it launched Embroker One, an AI- and machine-learning-driven platform for
+  real-time risk assessment and policy recommendations. The company has
+  protected 9,500+ businesses across 16,000+ policies and raised a $100M
+  round in 2021 led by FTV Capital. Embroker's revenue model is brokerage
+  commissions, managing general agent (MGA) underwriting fees on its own
+  products, and platform access for partner brokers; there is no public
+  developer API, SDK, or open-source release — its GitHub organization
+  contains only archived forks of third-party libraries and a small number
+  of internal tooling repositories.
+type: Index
+position: Provider
+access: 3rd-Party
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+tags:
+  - Insurance
+  - Business Insurance
+  - Commercial Insurance
+  - Insurtech
+  - Digital Insurance
+  - Broker
+  - Managing General Agent
+  - Cyber Insurance
+  - Professional Liability
+  - Directors and Officers
+  - Startups
+  - Law Firms
+  - Risk Management
+url: https://raw.githubusercontent.com/api-evangelist/embroker/refs/heads/main/apis.yml
+created: '2026-05-25'
+modified: '2026-05-25'
+specificationVersion: '0.20'
+apis: []
+common:
+  - type: Website
+    url: https://www.embroker.com
+  - type: SignIn
+    url: https://app.embroker.com/login
+  - type: SignUp
+    url: https://app.embroker.com/signup
+  - type: Application
+    url: https://app.embroker.com
+  - type: BrokerAccess
+    url: https://access.embroker.com
+  - type: Coverages
+    url: https://www.embroker.com/coverage/
+  - type: Startup
+    url: https://www.embroker.com/startup/
+  - type: TechCompanies
+    url: https://www.embroker.com/non-funded-tech-companies/
+  - type: LawFirms
+    url: https://www.embroker.com/law/
+  - type: VentureCapital
+    url: https://www.embroker.com/venture-capital-private-equity-firms/
+  - type: FinancialServices
+    url: https://www.embroker.com/financial-services-professionals/
+  - type: Consultants
+    url: https://www.embroker.com/consultants/
+  - type: RealEstate
+    url: https://www.embroker.com/real-estate/
+  - type: SmallBusinesses
+    url: https://www.embroker.com/small-businesses/
+  - type: CyberInsurance
+    url: https://www.embroker.com/coverage/cyber-insurance/
+  - type: ProfessionalLiability
+    url: https://www.embroker.com/coverage/professional-liability-insurance/
+  - type: DirectorsAndOfficers
+    url: https://www.embroker.com/coverage/directors-officers-insurance/
+  - type: BusinessOwnersPolicy
+    url: https://www.embroker.com/coverage/business-owners-policy/
+  - type: GeneralLiability
+    url: https://www.embroker.com/coverage/commercial-general-liability-insurance/
+  - type: EmploymentPracticesLiability
+    url: https://www.embroker.com/coverage/employment-practices-liability-insurance/
+  - type: CommercialCrime
+    url: https://www.embroker.com/coverage/commercial-crime-insurance/
+  - type: LawyersProfessionalLiability
+    url: https://www.embroker.com/coverage/legal-professional-liability/
+  - type: TechErrorsOmissions
+    url: https://www.embroker.com/coverage/tech-errors-omissions/
+  - type: About
+    url: https://www.embroker.com/about/
+  - type: Press
+    url: https://www.embroker.com/press/
+  - type: Partners
+    url: https://www.embroker.com/partners/
+  - type: ResourceHub
+    url: https://www.embroker.com/resources/
+  - type: Blog
+    url: https://www.embroker.com/blog/
+  - type: Tools
+    url: https://www.embroker.com/tools/
+  - type: Careers
+    url: https://www.embroker.com/careers/
+  - type: Security
+    url: https://www.embroker.com/security/
+  - type: Privacy
+    url: https://www.embroker.com/privacy/
+  - type: Terms
+    url: https://www.embroker.com/terms/
+  - type: GitHub
+    url: https://github.com/embroker
+  - type: Twitter
+    url: https://twitter.com/Embroker
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/embroker
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
