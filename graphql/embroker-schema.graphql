@@ -1,0 +1,1060 @@
+"""
+Embroker GraphQL Schema
+Conceptual schema for Embroker commercial business insurance platform.
+Models policies, quotes, applications, claims, agents, brokers, and risk assessment.
+"""
+
+scalar DateTime
+scalar Date
+scalar JSON
+scalar Decimal
+scalar UUID
+
+# ─── Enumerations ────────────────────────────────────────────────────────────
+
+enum PolicyStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  PENDING
+  NON_RENEWED
+  IN_FORCE
+}
+
+enum QuoteStatus {
+  DRAFT
+  PENDING
+  ISSUED
+  BOUND
+  DECLINED
+  EXPIRED
+  REFERRED
+}
+
+enum ClaimStatus {
+  OPEN
+  UNDER_INVESTIGATION
+  PENDING_PAYMENT
+  CLOSED
+  DENIED
+  REOPENED
+}
+
+enum CoverageType {
+  GENERAL_LIABILITY
+  PROFESSIONAL_LIABILITY
+  CYBER
+  DIRECTORS_AND_OFFICERS
+  EMPLOYMENT_PRACTICES_LIABILITY
+  TECHNOLOGY_ERRORS_AND_OMISSIONS
+  COMMERCIAL_CRIME
+  WORKERS_COMPENSATION
+  BUSINESS_OWNERS_POLICY
+  LAWYERS_PROFESSIONAL_LIABILITY
+  KEY_PERSON
+  COMMERCIAL_AUTO
+  UMBRELLA
+}
+
+enum PolicyType {
+  OCCURRENCE
+  CLAIMS_MADE
+  CLAIMS_MADE_AND_REPORTED
+}
+
+enum BusinessType {
+  CORPORATION
+  LLC
+  PARTNERSHIP
+  SOLE_PROPRIETORSHIP
+  NON_PROFIT
+  S_CORP
+  C_CORP
+}
+
+enum WebhookEvent {
+  POLICY_ISSUED
+  POLICY_CANCELLED
+  POLICY_RENEWED
+  QUOTE_GENERATED
+  QUOTE_BOUND
+  QUOTE_EXPIRED
+  CLAIM_FILED
+  CLAIM_UPDATED
+  CLAIM_CLOSED
+  APPLICATION_SUBMITTED
+  APPLICATION_APPROVED
+  APPLICATION_DECLINED
+  CERTIFICATE_ISSUED
+  PAYMENT_RECEIVED
+  PAYMENT_FAILED
+}
+
+# ─── Core Insurance Types ─────────────────────────────────────────────────────
+
+"""
+A bound insurance policy representing an active or historical insurance contract.
+"""
+type Policy {
+  id: UUID!
+  policyNumber: String!
+  status: PolicyStatus!
+  type: PolicyType!
+  policyType: PolicyType!
+  details: PolicyDetails!
+  coverage: [Coverage!]!
+  premium: Premium!
+  effectiveDate: Date!
+  expirationDate: Date!
+  renewalDate: Date
+  insurer: Insurer!
+  business: Business!
+  agent: Agent
+  broker: Broker
+  endorsements: [Endorsement!]!
+  documents: [PolicyDocument!]!
+  certificates: [Certificate!]!
+  claims: [Claim!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+Extended metadata and narrative details for a policy.
+"""
+type PolicyDetails {
+  policyId: UUID!
+  namedInsured: String!
+  additionalInsureds: [String!]!
+  retroactiveDate: Date
+  priorActsDate: Date
+  territory: String!
+  jurisdiction: String!
+  programName: String
+  bundleName: String
+  notes: String
+}
+
+"""
+A coverage line within a policy, defining what is insured and under what terms.
+"""
+type Coverage {
+  id: UUID!
+  type: CoverageType!
+  coverageType: CoverageType!
+  details: CoverageDetails!
+  limit: Limit!
+  deductible: Deductible!
+  premium: Premium!
+  effectiveDate: Date!
+  expirationDate: Date!
+  isActive: Boolean!
+  ratingFactors: [RatingFactor!]!
+}
+
+"""
+Descriptive detail about a specific coverage line.
+"""
+type CoverageDetails {
+  coverageId: UUID!
+  description: String!
+  sublimits: [Limit!]!
+  exclusions: [String!]!
+  conditions: [String!]!
+  retroDate: Date
+  waitingPeriod: Int
+}
+
+"""
+A coverage limit specifying the maximum insurer liability.
+"""
+type Limit {
+  id: UUID!
+  perOccurrence: Decimal!
+  aggregate: Decimal!
+  perClaim: Decimal
+  currency: String!
+  description: String
+}
+
+"""
+A deductible or self-insured retention amount applicable to a coverage.
+"""
+type Deductible {
+  id: UUID!
+  amount: Decimal!
+  type: String!
+  perOccurrence: Boolean!
+  aggregate: Decimal
+  currency: String!
+  description: String
+}
+
+"""
+A policy endorsement modifying the terms, coverage, or exclusions of a policy.
+"""
+type Endorsement {
+  id: UUID!
+  formNumber: String!
+  title: String!
+  description: String!
+  effectiveDate: Date!
+  premium: Decimal
+  isAddedCoverage: Boolean!
+  isMandatory: Boolean!
+  addedAt: DateTime!
+}
+
+# ─── Quoting ─────────────────────────────────────────────────────────────────
+
+"""
+A quote for insurance coverage generated from an application submission.
+"""
+type Quote {
+  id: UUID!
+  status: QuoteStatus!
+  quoteNumber: String!
+  details: QuoteDetails!
+  application: Application!
+  coverages: [Coverage!]!
+  premium: Premium!
+  insurer: Insurer!
+  expiresAt: DateTime!
+  issuedAt: DateTime
+  boundAt: DateTime
+  declinedReason: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+Detailed pricing and underwriting information attached to a quote.
+"""
+type QuoteDetails {
+  quoteId: UUID!
+  effectiveDate: Date!
+  expirationDate: Date!
+  paymentOptions: [PaymentOption!]!
+  surcharges: [Surcharge!]!
+  discounts: [Discount!]!
+  totalAnnualPremium: Decimal!
+  minimumEarnedPremium: Decimal
+  taxes: Decimal!
+  fees: Decimal!
+  currency: String!
+  carrierMarket: CarrierMarket
+}
+
+"""
+A payment installment option available for a quoted policy.
+"""
+type PaymentOption {
+  id: UUID!
+  planName: String!
+  installments: Int!
+  downPayment: Decimal!
+  installmentAmount: Decimal!
+  totalAmount: Decimal!
+  currency: String!
+}
+
+"""
+A surcharge applied to the quoted premium.
+"""
+type Surcharge {
+  id: UUID!
+  code: String!
+  description: String!
+  amount: Decimal!
+  percentage: Decimal
+  currency: String!
+}
+
+"""
+A discount applied to the quoted premium.
+"""
+type Discount {
+  id: UUID!
+  code: String!
+  description: String!
+  amount: Decimal!
+  percentage: Decimal
+  currency: String!
+}
+
+# ─── Applications ─────────────────────────────────────────────────────────────
+
+"""
+An insurance application submitted by or on behalf of a business.
+"""
+type Application {
+  id: UUID!
+  status: String!
+  details: ApplicationDetails!
+  business: Business!
+  questions: [ApplicationQuestion!]!
+  answers: [Answer!]!
+  riskDetails: RiskDetails!
+  submittedAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+Metadata and program context for an application.
+"""
+type ApplicationDetails {
+  applicationId: UUID!
+  programType: String!
+  coverageTypesRequested: [CoverageType!]!
+  referralSource: String
+  campaignCode: String
+  agentCode: String
+  brokerCode: String
+  completionPercentage: Int!
+  isComplete: Boolean!
+}
+
+"""
+A single underwriting question presented in an application.
+"""
+type ApplicationQuestion {
+  id: UUID!
+  questionCode: String!
+  questionText: String!
+  helpText: String
+  isRequired: Boolean!
+  questionType: String!
+  possibleAnswers: [String!]
+  dependsOnQuestionId: UUID
+  order: Int!
+  section: String!
+}
+
+"""
+A response to an application question.
+"""
+type Answer {
+  id: UUID!
+  question: ApplicationQuestion!
+  value: String!
+  booleanValue: Boolean
+  numericValue: Decimal
+  textValue: String
+  answeredAt: DateTime!
+}
+
+# ─── Business ─────────────────────────────────────────────────────────────────
+
+"""
+An insured business entity applying for or holding insurance coverage.
+"""
+type Business {
+  id: UUID!
+  name: String!
+  legalName: String!
+  businessType: BusinessType!
+  details: BusinessDetails!
+  industry: Industry!
+  address: Address!
+  contact: Contact!
+  revenue: Revenue!
+  employees: Employees!
+  locations: [Location!]!
+  policies: [Policy!]!
+  quotes: [Quote!]!
+  applications: [Application!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+Additional metadata about a business entity.
+"""
+type BusinessDetails {
+  businessId: UUID!
+  ein: String
+  naicsCode: String
+  sicCode: String
+  yearFounded: Int
+  website: String
+  description: String
+  isFunded: Boolean!
+  fundingStage: String
+  totalFundingRaised: Decimal
+  isPubliclyTraded: Boolean!
+  stockTicker: String
+  subsidiaries: [String!]!
+}
+
+"""
+An industry classification for a business.
+"""
+type Industry {
+  id: UUID!
+  name: String!
+  code: IndustryCode!
+  segment: String!
+  subSegment: String
+  riskCategory: String!
+  isEligible: Boolean!
+  programs: [String!]!
+}
+
+"""
+An industry classification code (NAICS, SIC, or Embroker-internal).
+"""
+type IndustryCode {
+  naics: String
+  sic: String
+  embrokerCode: String
+  description: String!
+}
+
+"""
+A physical or mailing address.
+"""
+type Address {
+  id: UUID!
+  line1: String!
+  line2: String
+  city: String!
+  state: String!
+  postalCode: String!
+  country: String!
+  isMailingAddress: Boolean!
+  isPrimaryLocation: Boolean!
+}
+
+"""
+Contact information for a business or individual.
+"""
+type Contact {
+  id: UUID!
+  firstName: String!
+  lastName: String!
+  title: String
+  email: String!
+  phone: String
+  extension: String
+  isPrimary: Boolean!
+}
+
+"""
+Annual revenue information for underwriting purposes.
+"""
+type Revenue {
+  annualRevenue: Decimal!
+  projectedRevenue: Decimal
+  currency: String!
+  reportingYear: Int!
+  revenueType: String
+}
+
+"""
+Employee count information used in underwriting.
+"""
+type Employees {
+  fullTime: Int!
+  partTime: Int!
+  contractors: Int
+  totalHeadcount: Int!
+  reportingDate: Date!
+}
+
+"""
+A business location relevant to coverage and risk assessment.
+"""
+type Location {
+  id: UUID!
+  name: String!
+  isPrimary: Boolean!
+  address: Address!
+  details: LocationDetails!
+  employees: Employees!
+  revenue: Decimal
+}
+
+"""
+Additional underwriting details about a business location.
+"""
+type LocationDetails {
+  locationId: UUID!
+  squareFootage: Int
+  buildingOwned: Boolean!
+  buildingAge: Int
+  constructionType: String
+  sprinklerSystem: Boolean
+  securitySystem: Boolean
+  occupancyType: String
+}
+
+# ─── Risk Assessment ─────────────────────────────────────────────────────────
+
+"""
+Aggregated risk profile for a business based on its exposures and characteristics.
+"""
+type Risk {
+  id: UUID!
+  business: Business!
+  details: RiskDetails!
+  factors: [RiskFactor!]!
+  exposures: [Exposure!]!
+  overallScore: Decimal
+  assessedAt: DateTime!
+}
+
+"""
+Narrative and categorical summary of a risk assessment.
+"""
+type RiskDetails {
+  riskId: UUID!
+  riskCategory: String!
+  riskTier: String!
+  narrativeSummary: String
+  dataDataPoints: [String!]!
+  mlModelVersion: String
+  isReferred: Boolean!
+  referralReasons: [String!]!
+}
+
+"""
+An individual risk factor influencing underwriting decisions.
+"""
+type RiskFactor {
+  id: UUID!
+  factorCode: String!
+  factorName: String!
+  description: String!
+  weight: Decimal!
+  value: String!
+  impact: String!
+  source: String!
+}
+
+"""
+An exposure unit used to calculate insurance premiums.
+"""
+type Exposure {
+  id: UUID!
+  exposureType: String!
+  unit: String!
+  quantity: Decimal!
+  rate: Decimal!
+  premium: Decimal!
+  description: String
+}
+
+"""
+A rating factor applied in premium computation.
+"""
+type RatingFactor {
+  id: UUID!
+  code: String!
+  name: String!
+  value: Decimal!
+  modifier: Decimal!
+  description: String
+  source: String!
+}
+
+"""
+A premium amount with breakdown components.
+"""
+type Premium {
+  id: UUID!
+  details: PremiumDetails!
+  annualAmount: Decimal!
+  proRatedAmount: Decimal
+  currency: String!
+  paymentFrequency: String!
+}
+
+"""
+Itemized breakdown of a premium calculation.
+"""
+type PremiumDetails {
+  premiumId: UUID!
+  basePremium: Decimal!
+  surcharges: Decimal!
+  discounts: Decimal!
+  taxes: Decimal!
+  fees: Decimal!
+  totalPremium: Decimal!
+  minimumPremium: Decimal
+  currency: String!
+}
+
+# ─── Insurers and Markets ─────────────────────────────────────────────────────
+
+"""
+An insurance carrier or underwriting entity.
+"""
+type Insurer {
+  id: UUID!
+  name: String!
+  legalName: String!
+  details: InsurerDetails!
+  markets: [CarrierMarket!]!
+  amBestRating: String
+  spRating: String
+  isAdmitted: Boolean!
+}
+
+"""
+Detailed information about an insurance carrier.
+"""
+type InsurerDetails {
+  insurerId: UUID!
+  naic: String!
+  domicileState: String!
+  licenseStates: [String!]!
+  isMGA: Boolean!
+  parentCompany: String
+  website: String
+  claimsPhone: String
+  claimsEmail: String
+}
+
+"""
+A specific carrier market appetite and program offering.
+"""
+type CarrierMarket {
+  id: UUID!
+  insurer: Insurer!
+  programName: String!
+  coverageTypes: [CoverageType!]!
+  industrySegments: [String!]!
+  minPremium: Decimal
+  maxPremium: Decimal
+  maxLimit: Decimal
+  isActive: Boolean!
+  effectiveDate: Date!
+  expirationDate: Date
+}
+
+# ─── Binding ─────────────────────────────────────────────────────────────────
+
+"""
+A request to bind a quoted policy, converting it to an active policy.
+"""
+type BindRequest {
+  id: UUID!
+  quote: Quote!
+  details: BindDetails!
+  submittedBy: Contact!
+  submittedAt: DateTime!
+  confirmedAt: DateTime
+  policyId: UUID
+  status: String!
+}
+
+"""
+Details captured at the time of binding a quote.
+"""
+type BindDetails {
+  bindRequestId: UUID!
+  effectiveDate: Date!
+  paymentOption: PaymentOption!
+  paymentMethodId: String
+  electronicSignatureId: String
+  acknowledgedTerms: Boolean!
+  acknowledgedAt: DateTime!
+  ipAddress: String
+  userAgent: String
+}
+
+# ─── Documents ────────────────────────────────────────────────────────────────
+
+"""
+A policy document such as a declarations page, policy form, or endorsement schedule.
+"""
+type PolicyDocument {
+  id: UUID!
+  policyId: UUID!
+  documentType: String!
+  title: String!
+  description: String
+  url: String!
+  mimeType: String!
+  fileSizeBytes: Int
+  version: Int!
+  issuedAt: DateTime!
+  expiresAt: DateTime
+}
+
+"""
+A certificate of insurance issued on behalf of an insured.
+"""
+type Certificate {
+  id: UUID!
+  policy: Policy!
+  certificateNumber: String!
+  holder: CertificateHolder!
+  issuedAt: DateTime!
+  expiresAt: DateTime!
+  coverageSummary: String!
+  additionalInsuredAdded: Boolean!
+  waiverOfSubrogation: Boolean!
+  noticeOfCancellation: Int
+  documentUrl: String!
+}
+
+"""
+The party to whom a certificate of insurance is issued.
+"""
+type CertificateHolder {
+  id: UUID!
+  name: String!
+  address: Address!
+  email: String
+  isAdditionalInsured: Boolean!
+  requiresWaiverOfSubrogation: Boolean!
+  requiresNoticeOfCancellation: Boolean!
+  projectDescription: String
+}
+
+# ─── Claims ───────────────────────────────────────────────────────────────────
+
+"""
+A claim filed against an active insurance policy.
+"""
+type Claim {
+  id: UUID!
+  claimNumber: String!
+  policy: Policy!
+  status: ClaimStatus!
+  details: ClaimDetails!
+  reserves: [ClaimReserve!]!
+  reportedAt: DateTime!
+  incidentDate: Date!
+  closedAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+Detailed information about a claim event and its handling.
+"""
+type ClaimDetails {
+  claimId: UUID!
+  description: String!
+  incidentLocation: Address
+  claimantName: String
+  claimantContact: Contact
+  assignedAdjuster: String
+  adjustingFirm: String
+  litigated: Boolean!
+  totalIncurred: Decimal
+  totalPaid: Decimal
+  totalOutstanding: Decimal
+  currency: String!
+  causeOfLoss: String
+  coverageType: CoverageType
+}
+
+"""
+A financial reserve set aside for an open claim.
+"""
+type ClaimReserve {
+  id: UUID!
+  claimId: UUID!
+  reserveType: String!
+  amount: Decimal!
+  currency: String!
+  asOfDate: Date!
+  setBy: String
+  notes: String
+  updatedAt: DateTime!
+}
+
+# ─── Distribution ─────────────────────────────────────────────────────────────
+
+"""
+An insurance agent who places business through Embroker or Embroker Access.
+"""
+type Agent {
+  id: UUID!
+  npn: String!
+  details: AgentDetails!
+  broker: Broker
+  policies: [Policy!]!
+  commissions: [Commission!]!
+  isActive: Boolean!
+  createdAt: DateTime!
+}
+
+"""
+Detailed profile and licensing information for an agent.
+"""
+type AgentDetails {
+  agentId: UUID!
+  firstName: String!
+  lastName: String!
+  email: String!
+  phone: String
+  licenseStates: [String!]!
+  licenseNumbers: JSON
+  e_and_o_carrier: String
+  e_and_o_limit: Decimal
+  e_and_o_expiration: Date
+}
+
+"""
+A brokerage firm distributing Embroker products through Embroker Access.
+"""
+type Broker {
+  id: UUID!
+  name: String!
+  details: BrokerDetails!
+  agents: [Agent!]!
+  commissions: [Commission!]!
+  isActive: Boolean!
+  createdAt: DateTime!
+}
+
+"""
+Detailed profile and business information for a broker firm.
+"""
+type BrokerDetails {
+  brokerId: UUID!
+  legalName: String!
+  ein: String
+  address: Address!
+  contact: Contact!
+  website: String
+  licenseNumber: String
+  licenseStates: [String!]!
+  e_and_o_carrier: String
+  e_and_o_limit: Decimal
+  e_and_o_expiration: Date
+  isWholesale: Boolean!
+}
+
+"""
+A commission payment record for an agent or broker.
+"""
+type Commission {
+  id: UUID!
+  policy: Policy!
+  recipient: String!
+  recipientType: String!
+  commissionType: String!
+  percentage: Decimal!
+  amount: Decimal!
+  currency: String!
+  earnedAt: DateTime!
+  paidAt: DateTime
+  status: String!
+}
+
+# ─── Authentication and Webhooks ──────────────────────────────────────────────
+
+"""
+An API key used to authenticate programmatic access to the Embroker platform.
+"""
+type APIKey {
+  id: UUID!
+  name: String!
+  keyPrefix: String!
+  scopes: [String!]!
+  environment: String!
+  isActive: Boolean!
+  lastUsedAt: DateTime
+  expiresAt: DateTime
+  createdAt: DateTime!
+}
+
+"""
+A short-lived access token issued for authenticated API sessions.
+"""
+type Token {
+  accessToken: String!
+  tokenType: String!
+  expiresIn: Int!
+  scope: String!
+  issuedAt: DateTime!
+}
+
+"""
+A webhook endpoint registered to receive Embroker platform events.
+"""
+type Webhook {
+  id: UUID!
+  url: String!
+  description: String
+  events: [WebhookEvent!]!
+  secret: String!
+  isActive: Boolean!
+  lastDeliveredAt: DateTime
+  failureCount: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+A single webhook event delivery attempt and its outcome.
+"""
+type WebhookEventDelivery {
+  id: UUID!
+  webhook: Webhook!
+  event: WebhookEvent!
+  payload: JSON!
+  responseStatus: Int
+  responseBody: String
+  deliveredAt: DateTime
+  attemptCount: Int!
+  nextRetryAt: DateTime
+  succeeded: Boolean!
+}
+
+# ─── Root Operations ──────────────────────────────────────────────────────────
+
+type Query {
+  policy(id: UUID!): Policy
+  policies(businessId: UUID, status: PolicyStatus, coverageType: CoverageType): [Policy!]!
+  quote(id: UUID!): Quote
+  quotes(businessId: UUID, status: QuoteStatus): [Quote!]!
+  application(id: UUID!): Application
+  applications(businessId: UUID): [Application!]!
+  business(id: UUID!): Business
+  businesses(industryCode: String, state: String): [Business!]!
+  claim(id: UUID!): Claim
+  claims(policyId: UUID, status: ClaimStatus): [Claim!]!
+  certificate(id: UUID!): Certificate
+  certificates(policyId: UUID): [Certificate!]!
+  agent(id: UUID!): Agent
+  agents(brokerId: UUID): [Agent!]!
+  broker(id: UUID!): Broker
+  brokers: [Broker!]!
+  insurer(id: UUID!): Insurer
+  insurers: [Insurer!]!
+  apiKeys: [APIKey!]!
+  webhooks: [Webhook!]!
+  webhookDeliveries(webhookId: UUID!): [WebhookEventDelivery!]!
+}
+
+type Mutation {
+  submitApplication(input: SubmitApplicationInput!): Application!
+  updateApplication(id: UUID!, input: UpdateApplicationInput!): Application!
+  requestQuote(applicationId: UUID!): Quote!
+  bindQuote(quoteId: UUID!, input: BindQuoteInput!): BindRequest!
+  cancelPolicy(policyId: UUID!, reason: String!): Policy!
+  fileClaim(policyId: UUID!, input: FileClaimInput!): Claim!
+  updateClaim(claimId: UUID!, input: UpdateClaimInput!): Claim!
+  issueCertificate(policyId: UUID!, input: IssueCertificateInput!): Certificate!
+  createBusiness(input: CreateBusinessInput!): Business!
+  updateBusiness(id: UUID!, input: UpdateBusinessInput!): Business!
+  createWebhook(input: CreateWebhookInput!): Webhook!
+  updateWebhook(id: UUID!, input: UpdateWebhookInput!): Webhook!
+  deleteWebhook(id: UUID!): Boolean!
+  createAPIKey(name: String!, scopes: [String!]!): APIKey!
+  revokeAPIKey(id: UUID!): Boolean!
+}
+
+input SubmitApplicationInput {
+  businessId: UUID!
+  coverageTypes: [CoverageType!]!
+  answers: [AnswerInput!]!
+  agentCode: String
+  brokerCode: String
+}
+
+input UpdateApplicationInput {
+  answers: [AnswerInput!]
+  coverageTypes: [CoverageType!]
+}
+
+input AnswerInput {
+  questionId: UUID!
+  value: String!
+}
+
+input BindQuoteInput {
+  effectiveDate: Date!
+  paymentOptionId: UUID!
+  paymentMethodId: String
+  acknowledgedTerms: Boolean!
+}
+
+input FileClaimInput {
+  incidentDate: Date!
+  description: String!
+  causeOfLoss: String
+  coverageType: CoverageType
+  claimantName: String
+  claimantEmail: String
+  incidentAddress: AddressInput
+}
+
+input UpdateClaimInput {
+  description: String
+  status: ClaimStatus
+  totalIncurred: Decimal
+  litigated: Boolean
+}
+
+input IssueCertificateInput {
+  holderName: String!
+  holderAddress: AddressInput!
+  holderEmail: String
+  additionalInsured: Boolean
+  waiverOfSubrogation: Boolean
+  noticeOfCancellationDays: Int
+  projectDescription: String
+}
+
+input CreateBusinessInput {
+  name: String!
+  legalName: String!
+  businessType: BusinessType!
+  ein: String
+  website: String
+  yearFounded: Int
+  naicsCode: String
+  address: AddressInput!
+  contact: ContactInput!
+  annualRevenue: Decimal!
+  fullTimeEmployees: Int!
+  partTimeEmployees: Int
+}
+
+input UpdateBusinessInput {
+  name: String
+  website: String
+  address: AddressInput
+  contact: ContactInput
+  annualRevenue: Decimal
+  fullTimeEmployees: Int
+  partTimeEmployees: Int
+}
+
+input AddressInput {
+  line1: String!
+  line2: String
+  city: String!
+  state: String!
+  postalCode: String!
+  country: String
+}
+
+input ContactInput {
+  firstName: String!
+  lastName: String!
+  title: String
+  email: String!
+  phone: String
+}
+
+input CreateWebhookInput {
+  url: String!
+  description: String
+  events: [WebhookEvent!]!
+}
+
+input UpdateWebhookInput {
+  url: String
+  description: String
+  events: [WebhookEvent!]
+  isActive: Boolean
+}
