@@ -47,9 +47,9 @@ apis: []
 common:
 - type: Website
   url: https://www.embroker.com
-- type: SignIn
+- type: Login
   url: https://app.embroker.com/login
-- type: SignUp
+- type: Signup
   url: https://app.embroker.com/signup
 - type: Application
   url: https://app.embroker.com
