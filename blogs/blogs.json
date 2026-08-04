@@ -2,27 +2,13 @@
   "repo": "embroker",
   "feeds": [
     {
-      "source": "https://www.embroker.com/blog/feed/",
-      "feed_url": "https://www.embroker.com/blog/feed/",
-      "title": "",
-      "saved": 0,
-      "method": "feed"
-    },
-    {
-      "source": "https://www.embroker.com/resources/feed/",
-      "feed_url": "https://www.embroker.com/resources/feed/",
-      "title": "",
-      "saved": 0,
-      "method": "feed"
-    },
-    {
       "source": "https://www.embroker.com/resources/",
-      "feed_url": "https://www.embroker.com/resources/feed/",
+      "feed_url": "https://www.embroker.com/resources/",
       "title": "",
       "saved": 0,
-      "method": "discovered"
+      "method": "none"
     }
   ],
   "post_count": 10,
-  "fetched": "2026-07-11T11:50:51Z"
+  "fetched": "2026-08-01T15:49:00Z"
 }
