@@ -155,8 +155,6 @@ common:
   url: https://twitter.com/Embroker
 - type: LinkedIn
   url: https://www.linkedin.com/company/embroker
-- url: graphql/embroker-graphql.md
-  type: GraphQL
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
