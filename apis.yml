@@ -53,7 +53,7 @@ tags:
 - Commercial Insurance
 - Insurtech
 - Digital Insurance
-- Brokers
+- Brokerage
 - Managing General Agent
 - Cyber Insurance
 - Professional Liability
@@ -75,6 +75,7 @@ tags_raw:
 - Startups
 - Law Firms
 - Risk Management
+- Brokers
 url: https://raw.githubusercontent.com/api-evangelist/embroker/refs/heads/main/apis.yml
 created: '2026-05-25'
 modified: '2026-05-25'
