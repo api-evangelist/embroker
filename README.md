@@ -1,4 +1,4 @@
-# embroker
+# Embroker
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,4 +64,87 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Embroker — digital business insurance broker for startups, tech, law, and small business
+Embroker is a San Francisco-based digital business insurance broker and insurtech platform founded in 2015 by Matt Miller, on a mission to make commercial insurance simple, clear, and tailored to each industry. Embroker operates a digital-first online platform where businesses can compare, quote, purchase, and manage commercial insurance policies directly, with industry-specific programs for funded startups, tech companies, law firms, venture capital and private equity firms, financial services professionals, consultants, real estate agents, and small businesses. Its coverage portfolio includes Business Owners Policy (BOP), commercial general liability, professional liability, technology errors and omissions, cyber insurance, directors and officers, employment practices liability, commercial crime, key person, workers compensation, and lawyers professional liability, often bundled into industry packages such as the Startup Bundle, Law Bundle, and MPL Bundle. In 2017 Embroker partnered with Munich Re to underwrite its own digital insurance products; in 2020 it launched Embroker Access for retail and wholesale brokers; and in 2023 it launched Embroker One, an AI- and machine-learning-driven platform for real-time risk assessment and policy recommendations. The company has protected 9,500+ businesses across 16,000+ policies and raised a $100M round in 2021 led by FTV Capital. Embroker's revenue model is brokerage commissions, managing general agent (MGA) underwriting fees on its own products, and platform access for partner brokers; there is no public developer API, SDK, or open-source release — its GitHub organization contains only archived forks of third-party libraries and a small number of internal tooling repositories.
+
+**Areas:** Insurance · Business Insurance · Commercial Insurance · Insurtech · Digital Insurance · Brokerage · Managing General Agent · Cyber Insurance · Professional Liability · Directors and Officers · Startups · Law Firms
+
+## Embroker on APIs.io
+
+Everything profiled for Embroker is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/embroker/](https://apis.io/providers/embroker/)** — or go straight to one of the APIs or properties below.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### GraphQL (1)
+
+GraphQL schemas.
+
+- [Moved to /providers/embroker/](https://apis.io/graphqls/embroker/embroker-graphql/)
+
+#### Security (1)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Embroker Domain Security](https://apis.io/security/embroker/embroker-domain-security/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.embroker.com)
+- [Blog](https://www.embroker.com/blog/)
+- [Security](https://www.embroker.com/security/)
+
+## API Evangelist rating
+
+**Kin Score 8.3** — minimal · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 49.1 |
+| Contract quality | 0.0 |
+| Contract governance | 0.0 |
+| Operational transparency | 5.3 |
+| Developer ergonomics | 2.4 |
+| Access clarity | 17.1 |
+
+**Agent readiness 0.0** — human-only
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | — |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | — |
+| Idempotency | — |
+| Error Semantics | — |
+| OpenAPI Examples | — |
+| Rate Limit Signal | — |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 8.8** — Insurance
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/embroker/](https://apis.io/providers/embroker/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Embroker: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/embroker/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
